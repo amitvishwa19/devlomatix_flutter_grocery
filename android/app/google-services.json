@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "828743132119",
+    "project_id": "devlomatix-flutter-grocery",
+    "storage_bucket": "devlomatix-flutter-grocery.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:828743132119:android:7d0c130363e71967a9e192",
+        "android_client_info": {
+          "package_name": "com.example.devlomatix"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "828743132119-v5pr0k3fhu2ifu17n6ck9ilodj81k6e2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCuSQuQYhGBGlsmDWxqZrDVgVvzdekAq30"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "828743132119-v5pr0k3fhu2ifu17n6ck9ilodj81k6e2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
