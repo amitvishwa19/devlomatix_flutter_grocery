@@ -1,8 +1,38 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+class WishlistModel {
+  int? id;
+  int? userId;
+  Product? product;
 
-class ProductModel {
+  List<WishlistModel> wishlistModelFromJson(String str) =>
+      List<WishlistModel>.from(
+          json.decode(str).map((x) => WishlistModel.fromJson(x)));
+
+  String wishlistModelToJson(List<WishlistModel> data) =>
+      json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+  WishlistModel({this.id, this.userId, this.product});
+
+  WishlistModel.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    userId = json['user_id'];
+    product =
+        json['product'] != null ? new Product.fromJson(json['product']) : null;
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['user_id'] = this.userId;
+    if (this.product != null) {
+      data['product'] = this.product!.toJson();
+    }
+    return data;
+  }
+}
+
+class Product {
   int? id;
   String? title;
   String? slug;
@@ -16,14 +46,7 @@ class ProductModel {
   int? rating;
   int? quantity;
 
-  List<ProductModel> productModelFromJson(String str) =>
-      List<ProductModel>.from(
-          json.decode(str).map((x) => ProductModel.fromJson(x)));
-
-  String productModelToJson(List<ProductModel> data) =>
-      json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-  ProductModel(
+  Product(
       {this.id,
       this.title,
       this.slug,
@@ -37,7 +60,7 @@ class ProductModel {
       this.rating,
       this.quantity});
 
-  ProductModel.fromJson(Map<String, dynamic> json) {
+  Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     slug = json['slug'];
@@ -68,6 +91,4 @@ class ProductModel {
     data['quantity'] = this.quantity;
     return data;
   }
-
-  toLowerCase() {}
 }

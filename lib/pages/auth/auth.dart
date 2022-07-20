@@ -24,8 +24,7 @@ class _AuthState extends State<Auth> {
   double windowHeight = 0;
   double windowWidth = 0;
 
-  var _loginStackColor = Colors.white;
-  var _registerStackColor = Colors.red[200];
+  var _registerStackColor;
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +35,7 @@ class _AuthState extends State<Auth> {
       case 0:
         loginYOffset = 220;
         registerXOffset = 20;
-        _registerStackColor = Colors.red[200];
+        _registerStackColor = primaryColor.withOpacity(1);
         break;
       case 1:
         loginYOffset = windowHeight;

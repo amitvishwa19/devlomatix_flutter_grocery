@@ -17,19 +17,22 @@ class _OnboardState extends State<Onboard> {
 
   List<Map<String, String>> splashData = [
     {
-      "title": "This is a test title",
-      "text": "Welcome to DigiLearn,Let’s Learn!",
-      "image": "assets/images/splash_bg_1.png"
+      "title": "Welcome",
+      "text":
+          "Welcome to best online grocery store. Here you will find all the groceries at one place.",
+      "image": "assets/images/grocery_onboard_1.png"
     },
     {
-      "title": "This is a test title",
-      "text": "We help people conect with store around United State of America",
-      "image": "assets/images/splash_bg_2.png"
+      "title": "Fresh Fruits & Vegetables",
+      "text":
+          "Buy farm fresh fruits & vegetables online at the best & affordable prices.",
+      "image": "assets/images/grocery_onboard_2.png"
     },
     {
-      "title": "This is a test title",
-      "text": "We show the easy way to shop.Just stay at home with us",
-      "image": "assets/images/splash_bg_7.png"
+      "title": "Quick & Fast Delivery",
+      "text":
+          "We offers speedy delivery of your groceries, bathroom supplies, baby care products, pet care items, stationary, etc within 30minutes at your doorstep.",
+      "image": "assets/images/grocery_onboard_3.png"
     },
   ];
 
@@ -50,7 +53,7 @@ class _OnboardState extends State<Onboard> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Container(
-                  height: 500,
+                  height: 750,
                   child: PageView.builder(
                       onPageChanged: (value) {
                         setState(() {
@@ -60,7 +63,7 @@ class _OnboardState extends State<Onboard> {
                       },
                       itemCount: splashData.length,
                       itemBuilder: (context, index) => OnBoardContent(
-                            appTitle: Strings.appTitle,
+                            appTitle: splashData[index]['title'] ?? '',
                             appSubtitle: splashData[index]['text'] ?? '',
                             image: splashData[index]['image'] ?? '',
                           )),
@@ -75,7 +78,7 @@ class _OnboardState extends State<Onboard> {
                   vertical: 20,
                   horizontal: 20,
                 ),
-                decoration: const BoxDecoration(color: Colors.grey),
+                decoration: const BoxDecoration(color: primaryColor),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -87,7 +90,9 @@ class _OnboardState extends State<Onboard> {
                       child: const Text(
                         "Skip",
                         style: TextStyle(
-                            fontSize: 16, fontWeight: FontWeight.bold),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white),
                       ),
                     ),
                     Container(
@@ -126,9 +131,7 @@ class _OnboardState extends State<Onboard> {
       height: 8,
       width: currentPage == index ? 20 : 10,
       decoration: BoxDecoration(
-          color: currentPage == index
-              ? primaryColor
-              : Color.fromARGB(255, 137, 107, 107),
+          color: currentPage == index ? Colors.white : Colors.black,
           borderRadius: BorderRadius.circular(3)),
     );
   }
@@ -149,6 +152,14 @@ class OnBoardContent extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
+          height: 350,
+          width: MediaQuery.of(context).size.width,
+          padding: const EdgeInsets.all(50),
+          decoration:
+              BoxDecoration(image: DecorationImage(image: AssetImage(image))),
+        ),
+        const SizedBox(height: 40),
+        Container(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           child: Text(
             appTitle,
@@ -156,15 +167,7 @@ class OnBoardContent extends StatelessWidget {
                 fontSize: 28, fontWeight: FontWeight.bold, color: primaryColor),
           ),
         ),
-        const SizedBox(height: 50),
-        Container(
-          height: 200,
-          width: MediaQuery.of(context).size.width,
-          padding: const EdgeInsets.all(50),
-          decoration:
-              BoxDecoration(image: DecorationImage(image: AssetImage(image))),
-        ),
-        const SizedBox(height: 50),
+        const SizedBox(height: 40),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 30),
           child: Text(

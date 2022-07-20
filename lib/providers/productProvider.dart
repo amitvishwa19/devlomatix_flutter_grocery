@@ -3,19 +3,29 @@ import 'dart:convert';
 import 'package:devlomatix/models/categoryModel.dart';
 import 'package:devlomatix/models/productModel.dart';
 import 'package:devlomatix/models/sliderModel.dart';
+import 'package:devlomatix/providers/searchProvider.dart';
 import 'package:devlomatix/utils/api.dart';
 import 'package:devlomatix/utils/pref.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 
 class ProductProvider extends ChangeNotifier {
   List<SliderModel> slider = [];
   List<CategoryModel> category = [];
   List<ProductModel> trending = [];
+  List<ProductModel> featured = [];
   List<ProductModel> hotProd = [];
+  List<ProductModel> allProducts = [];
+  List<ProductModel> recentlyViewed = [];
+  List<ProductModel> mostViewed = [];
+  List<ProductModel> searchDefaultItems = [];
+  List<ProductModel> searchedItems = [];
+
   ProductModel product = ProductModel();
   int cartCount = 0;
   bool favrouite = false;
+  String productCategory = '';
 
   Future<void> getSlider() async {
     final String url = API.grocerySlider.toString();
@@ -60,8 +70,48 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
+  Future<void> getProducts(title, slug) async {
+    final String url = API.products.toString() + slug;
+
+    String token = await SharePref.getString('token');
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final response = await http.get(Uri.parse(url), headers: header);
+    if (response.statusCode == 200) {
+      allProducts = (json.decode(response.body) as List)
+          .map((i) => ProductModel.fromJson(i))
+          .toList();
+      notifyListeners();
+    }
+  }
+
+  Future<void> featuredProd() async {
+    final String url = API.products.toString() + 'featured';
+
+    String token = await SharePref.getString('token');
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final response = await http.get(Uri.parse(url), headers: header);
+
+    if (response.statusCode == 200) {
+      featured = (json.decode(response.body) as List)
+          .map((i) => ProductModel.fromJson(i))
+          .toList();
+      searchDefaultItems.addAll(featured);
+      notifyListeners();
+    }
+  }
+
   Future<void> hotProducts() async {
-    final String url = API.hotProducts.toString();
+    final String url = API.products.toString() + 'hot';
 
     String token = await SharePref.getString('token');
 
@@ -76,7 +126,28 @@ class ProductProvider extends ChangeNotifier {
       hotProd = (json.decode(response.body) as List)
           .map((i) => ProductModel.fromJson(i))
           .toList();
-      print('hot products:' + hotProd.length.toString());
+      searchDefaultItems.addAll(hotProd);
+      notifyListeners();
+    }
+  }
+
+  Future<void> trendingProd() async {
+    final String url = API.products.toString() + 'trending';
+
+    String token = await SharePref.getString('token');
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final response = await http.get(Uri.parse(url), headers: header);
+
+    if (response.statusCode == 200) {
+      trending = (json.decode(response.body) as List)
+          .map((i) => ProductModel.fromJson(i))
+          .toList();
+      searchDefaultItems.addAll(trending);
       notifyListeners();
     }
   }
@@ -97,17 +168,57 @@ class ProductProvider extends ChangeNotifier {
       trending = (json.decode(response.body) as List)
           .map((i) => ProductModel.fromJson(i))
           .toList();
-      print('trending products:' + trending.length.toString());
       notifyListeners();
     }
-
-    print('-----------------------product list---------------${url}');
   }
 
-  void isFavorite() {
-    favrouite != favrouite;
+  Future<void> trendingItems(String category) async {
+    final String url = API.products.toString() + category;
+
+    String token = await SharePref.getString('token');
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+
+    final response = await http.get(Uri.parse(url), headers: header);
+
+    if (response.statusCode == 200) {
+      trending = (json.decode(response.body) as List)
+          .map((i) => ProductModel.fromJson(i))
+          .toList();
+      notifyListeners();
+    }
+  }
+
+  Future<List<ProductModel>?> productList(String category) async {
+    final String url = API.products.toString() + category;
+    String _token = await SharePref.getString('token');
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $_token',
+    };
+
+    final response = await http.get(Uri.parse(url), headers: header);
+
+    if (response.statusCode == 200) {
+      return (json.decode(response.body) as List)
+          .map((i) => ProductModel.fromJson(i))
+          .toList();
+    } else {
+      return null;
+    }
+  }
+
+  void setProductCategory(String title) {
+    productCategory = title.toString();
     notifyListeners();
   }
+
+  void allProductsList() {}
 
   void addToCart(ProductModel product) {
     cartCount = cartCount + 1;
@@ -115,7 +226,106 @@ class ProductProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void addToWishList(ProductModel product) {
-    print('${product.title} added to wishlist');
+  void markViewed(id) async {
+    final String _url = API.viewProduct.toString();
+
+    String _token = await SharePref.getString('token');
+
+    var data = jsonEncode({'productId': id});
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $_token',
+    };
+
+    final response =
+        await http.post(Uri.parse(_url), body: data, headers: header);
+
+    if (response.statusCode == 200) {
+      await getRecentlyViewed();
+      await getMostViewed();
+    }
+  }
+
+  getRecentlyViewed() async {
+    final String _url = API.viewedRecent.toString();
+
+    String _token = await SharePref.getString('token');
+
+    //var data = jsonEncode({'productId': id});
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $_token',
+    };
+
+    final response = await http.get(Uri.parse(_url), headers: header);
+
+    if (response.statusCode == 200) {
+      recentlyViewed = (json.decode(response.body) as List)
+          .map((i) => ProductModel.fromJson(i))
+          .toList();
+      notifyListeners();
+    }
+  }
+
+  getMostViewed() async {
+    final String _url = API.mostViewed.toString();
+
+    String _token = await SharePref.getString('token');
+
+    //var data = jsonEncode({'productId': id});
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $_token',
+    };
+
+    final response = await http.get(Uri.parse(_url), headers: header);
+
+    if (response.statusCode == 200) {
+      mostViewed = (json.decode(response.body) as List)
+          .map((i) => ProductModel.fromJson(i))
+          .toList();
+      notifyListeners();
+    }
+  }
+
+  Future<List<ProductModel>> searchItems(String query) async {
+    List<ProductModel> items = [];
+
+    final String url = API.productSearch.toString();
+    String token = await SharePref.getString('token');
+    var data = jsonEncode({'string': query});
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+    };
+    print(query);
+    final response =
+        await http.post(Uri.parse(url), body: data, headers: header);
+
+    if (response.statusCode == 200) {
+      Iterable i = json.decode(response.body);
+      // items = (json.decode(response.body) as List)
+      //     .map((i) => ProductModel.fromJson(i))
+      //     .toList();
+      items = List<ProductModel>.from(i.map((e) => ProductModel.fromJson(e)))
+          .toList();
+
+      return items;
+    } else {
+      return items;
+    }
+  }
+
+  setDefaultSearchItems() async {
+    searchDefaultItems.addAll(featured);
+    searchDefaultItems.addAll(trending);
+    searchDefaultItems.addAll(hotProd);
+    notifyListeners();
   }
 }

@@ -1,8 +1,37 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
+List<CartModel> cartModelFromJson(String str) =>
+    List<CartModel>.from(json.decode(str).map((x) => CartModel.fromJson(x)));
 
-class ProductModel {
+String cartModelToJson(List<CartModel> data) =>
+    json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
+
+class CartModel {
+  int? cartId;
+  Product? product;
+  int? quantity;
+
+  CartModel({this.cartId, this.product, this.quantity});
+
+  CartModel.fromJson(Map<String, dynamic> json) {
+    cartId = json['cart_id'];
+    product =
+        json['product'] != null ? new Product.fromJson(json['product']) : null;
+    quantity = json['quantity'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['cart_id'] = this.cartId;
+    if (this.product != null) {
+      data['product'] = this.product!.toJson();
+    }
+    data['quantity'] = this.quantity;
+    return data;
+  }
+}
+
+class Product {
   int? id;
   String? title;
   String? slug;
@@ -14,16 +43,8 @@ class ProductModel {
   String? sku;
   int? featured;
   int? rating;
-  int? quantity;
 
-  List<ProductModel> productModelFromJson(String str) =>
-      List<ProductModel>.from(
-          json.decode(str).map((x) => ProductModel.fromJson(x)));
-
-  String productModelToJson(List<ProductModel> data) =>
-      json.encode(List<dynamic>.from(data.map((x) => x.toJson())));
-
-  ProductModel(
+  Product(
       {this.id,
       this.title,
       this.slug,
@@ -34,10 +55,9 @@ class ProductModel {
       this.netPrice,
       this.sku,
       this.featured,
-      this.rating,
-      this.quantity});
+      this.rating});
 
-  ProductModel.fromJson(Map<String, dynamic> json) {
+  Product.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     title = json['title'];
     slug = json['slug'];
@@ -49,7 +69,6 @@ class ProductModel {
     sku = json['sku'];
     featured = json['featured'];
     rating = json['rating'];
-    quantity = json['quantity'];
   }
 
   Map<String, dynamic> toJson() {
@@ -65,9 +84,6 @@ class ProductModel {
     data['sku'] = this.sku;
     data['featured'] = this.featured;
     data['rating'] = this.rating;
-    data['quantity'] = this.quantity;
     return data;
   }
-
-  toLowerCase() {}
 }

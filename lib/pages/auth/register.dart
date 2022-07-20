@@ -1,4 +1,4 @@
-import 'package:devlomatix/pages/base/BasePage.dart';
+import 'package:devlomatix/pages/shop/pages/BasePage.dart';
 import 'package:devlomatix/providers/userProvider.dart';
 import 'package:devlomatix/services/authService.dart';
 import 'package:devlomatix/utils/colors.dart';

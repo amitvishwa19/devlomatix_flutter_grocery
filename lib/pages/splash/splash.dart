@@ -1,5 +1,5 @@
 import 'package:devlomatix/pages/auth/auth.dart';
-import 'package:devlomatix/pages/base/BasePage.dart';
+import 'package:devlomatix/pages/shop/pages/BasePage.dart';
 import 'package:devlomatix/pages/home/home.dart';
 import 'package:devlomatix/pages/onboard/onboard.dart';
 import 'package:devlomatix/providers/appProvider.dart';
@@ -55,10 +55,11 @@ class _SplashState extends State<Splash> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                height: 60,
-                width: 60,
+                height: 300,
+                width: 300,
                 decoration: const BoxDecoration(
-                    image: DecorationImage(image: AssetImage(Strings.appIcon))),
+                    image: DecorationImage(
+                        image: AssetImage(Strings.splashHeroImage))),
               ),
             ],
           ),
@@ -72,6 +73,9 @@ class _SplashState extends State<Splash> {
         Provider.of<AuthProvider>(context, listen: false);
 
     //await SharePref.setBool('loggedIn', false);
+
+    //await SharePref.setBool('onBoarding', false);
+
     bool _onBoarding = await SharePref.getBool('onBoarding');
     bool _loggedIn = await SharePref.getBool('loggedIn');
     String token = await SharePref.getString('token');

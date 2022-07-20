@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 const primaryColor = Color(0xffD71D4E);
-//const PrimaryColor = Color(0xffD71D4E);
+//const primaryColor = Color.fromARGB(255, 0, 137, 123);
 const backgroundColor = Color(0xffEFF2F6);
 const buttonUpdating = Colors.blueGrey;
 const noticeBoard = Color(0xffFCF3CF);

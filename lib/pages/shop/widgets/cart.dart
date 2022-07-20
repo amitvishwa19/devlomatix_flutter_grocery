@@ -1,5 +1,5 @@
 import 'package:devlomatix/pages/shop/pages/cart.dart';
-import 'package:devlomatix/providers/productProvider.dart';
+import 'package:devlomatix/providers/cartProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -8,12 +8,14 @@ class SCart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<CartProvider>(context, listen: false).getCartData();
+    //cartProvider.getCartData();
     return SizedBox(
       child: GestureDetector(
         onTap: () {
           Navigator.pushNamed(context, Cart.routeName);
         },
-        child: Consumer<ProductProvider>(builder: (context, provider, child) {
+        child: Consumer<CartProvider>(builder: (context, provider, child) {
           return Container(
             //color: Colors.white,
             width: 50,
@@ -24,7 +26,7 @@ class SCart extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     const SizedBox(height: 5),
-                    Text(provider.cartCount.toString())
+                    Text(provider.cartItems.length.toString())
                   ],
                 )
               ],

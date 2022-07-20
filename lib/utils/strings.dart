@@ -3,6 +3,7 @@ class Strings {
 
   static const appTitle = 'Devlomatix Solutions';
   static const appVersion = '2.1.4';
+  static const splashHeroImage = 'assets/images/splash_grocery.png';
   static const splashBackground = 'assets/images/background.png';
   static const pageBackground = 'assets/images/bg.png';
   static const appIcon = 'assets/images/digilearn_fevi.png';
@@ -14,4 +15,6 @@ class Strings {
 
   static const serverTimeOut =
       'Server time out, please check your internet connection or try again later';
+
+  static const currencySign = '₹';
 }

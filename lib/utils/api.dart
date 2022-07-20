@@ -11,5 +11,16 @@ class API {
   static const grocerySlider = baseUrl + '/grocery/slider';
   static const groceryCategory = baseUrl + '/grocery/categories';
   static const products = baseUrl + '/grocery/products/';
-  static const hotProducts = baseUrl + '/grocery/products/hot-products';
+  static const hotProducts = baseUrl + '/grocery/products/hot';
+  static const cart = baseUrl + '/cart';
+  static const addToCart = baseUrl + '/cart/add';
+  static const deleteFromCart = baseUrl + '/cart/delete';
+  static const updateCart = baseUrl + '/cart/update';
+  static const viewProduct = baseUrl + '/products/viewed';
+  static const viewedRecent = baseUrl + '/products/viewed/recent';
+  static const mostViewed = baseUrl + '/products/viewed/most';
+  static const addToWishlist = baseUrl + '/wishlist/add';
+  static const removeFrmWishlist = baseUrl + '/wishlist/remove';
+  static const getWishlist = baseUrl + '/wishlist/get';
+  static const productSearch = baseUrl + '/grocery/products/search';
 }

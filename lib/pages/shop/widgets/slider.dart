@@ -17,7 +17,8 @@ class HomeSlider extends StatelessWidget {
             height: 180.0,
             autoPlay: true,
             autoPlayCurve: Curves.fastOutSlowIn,
-            enlargeCenterPage: false,
+            enlargeCenterPage: true,
+            viewportFraction: 1,
           ),
           items: provider.slider.map((i) {
             return Builder(

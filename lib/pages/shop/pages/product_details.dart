@@ -1,7 +1,11 @@
 import 'package:devlomatix/pages/shop/widgets/cart.dart';
+import 'package:devlomatix/providers/cartProvider.dart';
 import 'package:devlomatix/providers/productProvider.dart';
+import 'package:devlomatix/providers/wishlistProvider.dart';
 import 'package:devlomatix/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class ProductDetails extends StatefulWidget {
@@ -14,11 +18,26 @@ class ProductDetails extends StatefulWidget {
 }
 
 class _ProductDetailsState extends State<ProductDetails> {
-  int count = 0;
+  int count = 1;
   var stars = 5;
+  bool wishlistBool = false;
+
   @override
   Widget build(BuildContext context) {
-    ProductProvider provider = Provider.of<ProductProvider>(context);
+    ProductProvider provider =
+        Provider.of<ProductProvider>(context, listen: false);
+
+    CartProvider cartProvider =
+        Provider.of<CartProvider>(context, listen: false);
+
+    WishlistProvider wishlistProvider =
+        Provider.of<WishlistProvider>(context, listen: false);
+
+    provider.markViewed(provider.product.id);
+
+    // Provider.of<ProductProvider>(context, listen: false)
+    //     .markViewed(provider.product.id);
+
     return Scaffold(
         appBar: AppBar(
           elevation: 0,
@@ -60,6 +79,9 @@ class _ProductDetailsState extends State<ProductDetails> {
                         children: [
                           Image(
                             image: NetworkImage(item.image.toString()),
+                            height: 250,
+                            width: 250,
+                            fit: BoxFit.contain,
                           )
                         ],
                       ),
@@ -123,7 +145,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                           children: [
                             GestureDetector(
                               onTap: () {
-                                if (count > 0) {
+                                if (count > 1) {
                                   setState(() {
                                     count = count - 1;
                                   });
@@ -150,10 +172,15 @@ class _ProductDetailsState extends State<ProductDetails> {
                             ),
                             GestureDetector(
                               onTap: () {
-                                if (count < 20) {
+                                if (count < provider.product.quantity!) {
+                                  //print(provider.product.quantity.runtimeType);
                                   setState(() {
                                     count = count + 1;
                                   });
+                                } else {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "${provider.product.quantity} quantity of ${provider.product.title} is in stock");
                                 }
                               },
                               child: Container(
@@ -241,18 +268,41 @@ class _ProductDetailsState extends State<ProductDetails> {
               color: Colors.grey,
               iconColor: Colors.grey,
               title: "Add to wish list",
-              icon: Icons.favorite_outline,
+              icon: wishlistBool ? Icons.favorite : Icons.favorite_border,
               onClick: () {
-                provider.addToWishList(provider.product);
+                setState(() {
+                  wishlistBool = !wishlistBool;
+                });
+                if (wishlistBool) {
+                  HapticFeedback.vibrate();
+                  wishlistProvider.addToWishList(provider.product.id);
+                } else {
+                  HapticFeedback.vibrate();
+                  wishlistProvider.removeFromWishList(provider.product.id);
+                }
               },
             ),
             BottomActionBar(
               backgroundColor: primaryColor,
               color: Colors.white,
               iconColor: Colors.white,
-              title: "Add to Cart",
+              title: provider.product.quantity! > 1
+                  ? "Add to Cart"
+                  : "Out of Stock",
               icon: Icons.shopping_cart,
-              onClick: () {
+              onClick: () async {
+                if (provider.product.quantity! < 1) {
+                  Fluttertoast.showToast(
+                      msg:
+                          " ${provider.product.title} is out of stock,please add to wishlist to get notified");
+                  //await cartProvider.addToCart(item.id, 1);
+                  //await cartProvider.getCartData();
+                } else {
+                  Fluttertoast.showToast(
+                      msg: " ${provider.product.title} added to cart");
+                  await cartProvider.addToCart(provider.product.id, count);
+                  await cartProvider.getCartData();
+                }
                 provider.addToCart(provider.product);
               },
             )

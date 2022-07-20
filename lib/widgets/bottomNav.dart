@@ -20,22 +20,22 @@ BottomNavigationBar buidBottomNavBar(context) {
           label: 'Home'),
       BottomNavigationBarItem(
           icon: Icon(
-            FontAwesomeIcons.bell,
+            FontAwesomeIcons.solidBell,
             size: 18,
           ),
           label: 'Notifications'),
       BottomNavigationBarItem(
           icon: Icon(
-            FontAwesomeIcons.user,
+            FontAwesomeIcons.solidUser,
             size: 18,
           ),
           label: 'Profile'),
       BottomNavigationBarItem(
           icon: Icon(
-            FontAwesomeIcons.heart,
+            FontAwesomeIcons.solidHeart,
             size: 18,
           ),
-          label: 'Setting'),
+          label: 'Wishlist'),
       BottomNavigationBarItem(
           icon: Icon(
             FontAwesomeIcons.gear,
