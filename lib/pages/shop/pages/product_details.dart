@@ -3,6 +3,7 @@ import 'package:devlomatix/providers/cartProvider.dart';
 import 'package:devlomatix/providers/productProvider.dart';
 import 'package:devlomatix/providers/wishlistProvider.dart';
 import 'package:devlomatix/utils/colors.dart';
+import 'package:devlomatix/utils/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -19,7 +20,7 @@ class ProductDetails extends StatefulWidget {
 
 class _ProductDetailsState extends State<ProductDetails> {
   int count = 1;
-  var stars = 5;
+  int stars = 3;
   bool wishlistBool = false;
 
   @override
@@ -60,7 +61,7 @@ class _ProductDetailsState extends State<ProductDetails> {
         body: SingleChildScrollView(
           child: Consumer<ProductProvider>(builder: (context, provider, child) {
             var item = provider.product;
-            var rating = provider.product.rating.toString();
+            int rating = provider.product.rating!;
             return Column(
               children: [
                 //Top curved container for image
@@ -114,13 +115,19 @@ class _ProductDetailsState extends State<ProductDetails> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          print('Favourite icon clicked');
+                          //print('Favourite icon clicked');
                         },
-                        child: const Icon(
-                          Icons.favorite,
-                          color: primaryColor,
-                          size: 28,
-                        ),
+                        child: wishlistBool
+                            ? const Icon(
+                                Icons.favorite,
+                                color: primaryColor,
+                                size: 28,
+                              )
+                            : const Icon(
+                                Icons.favorite_border,
+                                color: primaryColor,
+                                size: 28,
+                              ),
                       )
                     ],
                   ),
@@ -199,7 +206,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                       Row(
                         children: [
                           Text(
-                            item.price.toString(),
+                            Strings.currencySign + item.price.toString(),
                             style: const TextStyle(
                                 fontWeight: FontWeight.w800,
                                 color: primaryColor,
@@ -209,7 +216,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                             width: 10,
                           ),
                           Text(
-                            item.price.toString(),
+                            Strings.currencySign + item.netPrice.toString(),
                             style: const TextStyle(
                               fontWeight: FontWeight.w800,
                             ),
@@ -247,7 +254,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                               fontSize: 20, fontWeight: FontWeight.w800)),
                       Row(
                         children: [
-                          for (int i = 0; i < stars; i++)
+                          for (int i = 0; i < rating; i++)
                             const Icon(
                               Icons.star_border,
                               color: Colors.amber,
@@ -298,6 +305,7 @@ class _ProductDetailsState extends State<ProductDetails> {
                   //await cartProvider.addToCart(item.id, 1);
                   //await cartProvider.getCartData();
                 } else {
+                  HapticFeedback.vibrate();
                   Fluttertoast.showToast(
                       msg: " ${provider.product.title} added to cart");
                   await cartProvider.addToCart(provider.product.id, count);

@@ -1,9 +1,8 @@
 import 'package:devlomatix/pages/shop/pages/home.dart';
 
-import 'package:devlomatix/pages/home/home.dart';
 import 'package:devlomatix/pages/profile/profile.dart';
 import 'package:devlomatix/pages/setting/settings.dart';
-import 'package:devlomatix/pages/shop/pages/notification.dart';
+import 'package:devlomatix/pages/shop/pages/orders.dart';
 import 'package:devlomatix/pages/shop/pages/wishlist.dart';
 import 'package:devlomatix/providers/appProvider.dart';
 import 'package:devlomatix/widgets/bottomNav.dart';
@@ -22,7 +21,7 @@ class BasePage extends StatelessWidget {
     AppProvider provider = Provider.of<AppProvider>(context);
     final List<Widget> _childrens = [
       const GroceryHome(),
-      const Notify(),
+      const Orders(),
       const Profile(),
       const Wishlist(),
       const Setting()

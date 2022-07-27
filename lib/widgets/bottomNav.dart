@@ -20,10 +20,10 @@ BottomNavigationBar buidBottomNavBar(context) {
           label: 'Home'),
       BottomNavigationBarItem(
           icon: Icon(
-            FontAwesomeIcons.solidBell,
+            FontAwesomeIcons.fileText,
             size: 18,
           ),
-          label: 'Notifications'),
+          label: 'Orders'),
       BottomNavigationBarItem(
           icon: Icon(
             FontAwesomeIcons.solidUser,

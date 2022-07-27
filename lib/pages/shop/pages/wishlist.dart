@@ -74,7 +74,7 @@ class _WishlistState extends State<Wishlist> {
                       ),
                       const SizedBox(height: 10),
                       const Text(
-                        'Empty Cart',
+                        'No Items in Wishlist',
                         style: TextStyle(
                             fontWeight: FontWeight.bold, fontSize: 22),
                       ),

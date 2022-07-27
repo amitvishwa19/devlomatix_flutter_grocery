@@ -1,12 +1,14 @@
 import 'package:devlomatix/pages/auth/auth.dart';
 import 'package:devlomatix/pages/shop/pages/BasePage.dart';
 import 'package:devlomatix/pages/shop/pages/add_address.dart';
+import 'package:devlomatix/pages/shop/pages/address.dart';
 import 'package:devlomatix/pages/shop/pages/address_selection.dart';
 import 'package:devlomatix/pages/shop/pages/allCategories.dart';
 import 'package:devlomatix/pages/shop/pages/allProducts.dart';
 import 'package:devlomatix/pages/shop/pages/cart.dart';
+import 'package:devlomatix/pages/shop/pages/category_products.dart';
 import 'package:devlomatix/pages/shop/pages/home.dart';
-import 'package:devlomatix/pages/shop/pages/notification.dart';
+import 'package:devlomatix/pages/shop/pages/orders.dart';
 import 'package:devlomatix/pages/shop/pages/product_details.dart';
 
 import 'package:devlomatix/pages/home/home.dart';
@@ -31,6 +33,7 @@ final Map<String, WidgetBuilder> routes = {
   Home.routeName: (context) => const Home(),
   Setting.routeName: (context) => const Setting(),
   Profile.routeName: (context) => const Profile(),
+  Address.routeName: (context) => const Address(),
   GroceryHome.routeName: (context) => const GroceryHome(),
   ProductDetails.routeName: (context) => const ProductDetails(),
   AllProducts.routeName: (context) => const AllProducts(),
@@ -43,7 +46,9 @@ final Map<String, WidgetBuilder> routes = {
   AddressSelection.routeName: (context) => const AddressSelection(),
   Checkout.routeName: (context) => const Checkout(),
   AddAddress.routeName: (context) => const AddAddress(),
-  Notify.routeName: (context) => const Notify(),
+  Orders.routeName: (context) => const Orders(),
+
+  CategoryProducts.routeName: (context) => const CategoryProducts(),
 
   //AllCategories.routeName: (context) => AllCategories(),
   //AllProducts.routeName: (context) => AllProducts()

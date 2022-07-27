@@ -1,10 +1,13 @@
-import 'package:devlomatix/pages/shop/pages/add_address.dart';
+import 'package:devlomatix/models/addressModel.dart';
+import 'package:devlomatix/pages/shop/pages/BasePage.dart';
 import 'package:devlomatix/pages/shop/widgets/cart.dart';
 import 'package:devlomatix/providers/cartProvider.dart';
+import 'package:devlomatix/providers/checkoutProvider.dart';
 import 'package:devlomatix/utils/colors.dart';
-import 'package:devlomatix/utils/constant.dart';
 import 'package:devlomatix/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:provider/provider.dart';
 
 class Checkout extends StatefulWidget {
@@ -16,12 +19,15 @@ class Checkout extends StatefulWidget {
 }
 
 class _CheckoutState extends State<Checkout> {
-  int paymentType = 2;
-  int addresses = 2;
-  int addressSelect = 1;
+  int paymentType = 1;
+  int addressesCount = 8;
+  int addressSelect = 0;
 
   @override
   Widget build(BuildContext context) {
+    CheckoutProvider checkoutProvider = Provider.of(context, listen: false);
+    CartProvider cartProvider = Provider.of(context, listen: false);
+    checkoutProvider.getAddress();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Checkout'),
@@ -33,61 +39,63 @@ class _CheckoutState extends State<Checkout> {
           )
         ],
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-                itemCount: addresses,
-                itemBuilder: (context, index) {
-                  return Container(
-                    child: const Address(),
-                  );
-                }),
-          ),
-          InkWell(
-            onTap: () {
-              print('Add new address');
-              Navigator.pushNamed(context, AddAddress.routeName);
-            },
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 10),
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(5),
-              ),
-              child: Row(
-                children: const [
-                  Icon(
-                    Icons.add,
-                    color: primaryColor,
+      body: Container(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            AddressDisplay(
+              address: checkoutProvider.deliveryAddress,
+            ),
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                children: [
+                  SummaryItem(
+                      leading: 'Total Items',
+                      traling: cartProvider.cartItems.length.toString()),
+                  SummaryItem(
+                      leading: 'Total Price',
+                      traling: Strings.currencySign +
+                          cartProvider.totalPrice.toString()),
+                  SummaryItem(
+                      leading: 'Delivery Charges',
+                      traling: Strings.currencySign +
+                          cartProvider.deliveryCharge.toString()),
+                  SummaryItem(
+                      leading: 'Total Discount',
+                      traling: Strings.currencySign +
+                          cartProvider.totalDiscount.toString()),
+                  const Divider(
+                    height: 1,
                   ),
-                  SizedBox(width: 10),
-                  Text(
-                    'Add New Address',
-                    style: TextStyle(color: primaryColor, fontSize: 18),
+                  const SizedBox(
+                    height: 10,
                   ),
+                  SummaryItem(
+                      leading: 'Total Bill',
+                      traling: Strings.currencySign +
+                          cartProvider.netPrice.toString()),
                 ],
               ),
-            ),
-          ),
-          const SizedBox(height: 20)
-        ],
+            )
+          ],
+        ),
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
           color: primaryColor.withOpacity(0.2),
           borderRadius: const BorderRadius.only(
               topLeft: Radius.circular(20), topRight: Radius.circular(20)),
-          border: Border.all(color: primaryColor.withOpacity(0.2)),
+          //border: Border.all(color: primaryColor.withOpacity(0.2)),
         ),
-        height: 300,
+        height: 280,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Container(
-              height: 230,
+              height: 210,
               //color: Colors.green.withOpacity(0.5),
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
               child: Column(
                 children: [
                   Row(
@@ -101,7 +109,14 @@ class _CheckoutState extends State<Checkout> {
                           });
                         },
                       ),
-                      const Text('Credit card / Debit Card')
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            paymentType = 1;
+                          });
+                        },
+                        child: const Text('Credit card / Debit Card / UPI'),
+                      )
                     ],
                   ),
                   Row(
@@ -115,7 +130,14 @@ class _CheckoutState extends State<Checkout> {
                           });
                         },
                       ),
-                      const Text('Google Pay')
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            paymentType = 2;
+                          });
+                        },
+                        child: const Text('Google Pay'),
+                      )
                     ],
                   ),
                   Row(
@@ -129,39 +151,61 @@ class _CheckoutState extends State<Checkout> {
                           });
                         },
                       ),
-                      const Text('Cash on Delivery')
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            paymentType = 3;
+                          });
+                        },
+                        child: const Text('Cash on Delivery'),
+                      )
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  Consumer<CartProvider>(builder: (context, data, child) {
-                    return Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          'Total ${data.cartItems.length} items in cart',
-                          style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: primaryColor),
-                        ),
-                        const SizedBox(width: 100),
-                        Text(
-                          Strings.currencySign + data.netPrice.toString(),
-                          style: const TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.w800,
-                              color: primaryColor),
-                        ),
-                      ],
-                    );
-                  })
+                  Row(
+                    children: [
+                      Radio(
+                        value: 4,
+                        groupValue: paymentType,
+                        onChanged: (e) {
+                          setState(() {
+                            paymentType = 4;
+                          });
+                        },
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            paymentType = 4;
+                          });
+                        },
+                        child: const Text('Pay Later'),
+                      )
+                    ],
+                  ),
                 ],
               ),
             ),
             InkWell(
-              onTap: () {},
+              onTap: () {
+                var data = {
+                  'address': checkoutProvider.deliveryAddress,
+                  'cart': cartProvider.cartItems,
+                  'status': 'ordered',
+                  'payment_id': 'kkdd8d88dnnnnndyd665'
+                };
+
+                HapticFeedback.vibrate();
+                checkoutProvider.checkout(data).then((value) {
+                  if (value == 'success') {
+                    Fluttertoast.showToast(msg: 'Order places successfully');
+                    cartProvider.getCartData();
+                    Navigator.of(context)
+                        .popUntil(ModalRoute.withName(BasePage.routeName));
+                  }
+                });
+              },
               child: Container(
-                margin: const EdgeInsets.only(bottom: 10, right: 20, left: 20),
+                margin: const EdgeInsets.only(bottom: 10, right: 10, left: 10),
                 padding: const EdgeInsets.all(15),
                 decoration: BoxDecoration(
                   color: primaryColor,
@@ -182,64 +226,79 @@ class _CheckoutState extends State<Checkout> {
   }
 }
 
-class Address extends StatelessWidget {
-  const Address({Key? key}) : super(key: key);
+class AddressDisplay extends StatelessWidget {
+  final AddressModel address;
+  const AddressDisplay({Key? key, required this.address}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-      margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      decoration: BoxDecoration(
-        border: Border.all(color: primaryColor.withOpacity(0.2)),
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: boxshadow,
+      padding: const EdgeInsets.symmetric(vertical: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ListTile(
+            leading: const Icon(
+              Icons.place,
+            ),
+            subtitle: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(address.house.toString() +
+                    ', ' +
+                    address.locality.toString() +
+                    ', ' +
+                    address.landmark.toString()),
+                Text(address.city.toString() +
+                    ', ' +
+                    address.state.toString() +
+                    ', ' +
+                    address.pincode.toString()),
+                Text('Mb: ' + address.mobile.toString())
+              ],
+            ),
+            trailing: Container(
+              padding: EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                  color: primaryColor, borderRadius: BorderRadius.circular(5)),
+              child: Text(
+                address.type![0].toUpperCase() +
+                    address.type!.substring(1).toLowerCase(),
+                style: TextStyle(color: Colors.white),
+              ),
+            ),
+          ),
+          const SizedBox(height: 10),
+          const Divider(
+            height: 1,
+          ),
+        ],
       ),
+    );
+  }
+}
+
+class SummaryItem extends StatelessWidget {
+  final String leading;
+  final String traling;
+  const SummaryItem({Key? key, required this.leading, required this.traling})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Radio(
-            value: 1,
-            groupValue: 1,
-            onChanged: (e) {},
+          Text(
+            leading,
+            style: const TextStyle(
+                fontWeight: FontWeight.w800, color: primaryColor),
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                '202-10, Rajeshwer Plannet',
-                style: TextStyle(fontSize: 16),
-              ),
-              Text('Harni Road', style: TextStyle(fontSize: 16)),
-              Text('Vadodara 390022', style: TextStyle(fontSize: 16))
-            ],
-          ),
-          Column(
-            //mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              GestureDetector(
-                onTap: () {
-                  print('Edit address clicked');
-                },
-                child: const Icon(
-                  Icons.edit,
-                  size: 16,
-                  color: primaryColor,
-                ),
-              ),
-              const SizedBox(height: 20),
-              GestureDetector(
-                onTap: () {
-                  print('Delete Address clicked');
-                },
-                child: const Icon(
-                  Icons.delete,
-                  size: 16,
-                  color: primaryColor,
-                ),
-              )
-            ],
-          )
+          Text(traling,
+              style: const TextStyle(
+                  fontWeight: FontWeight.w800, color: primaryColor)),
         ],
       ),
     );

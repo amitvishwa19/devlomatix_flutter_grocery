@@ -1,5 +1,6 @@
 import 'package:devlomatix/pages/shop/pages/allCategories.dart';
 import 'package:devlomatix/pages/shop/pages/allProducts.dart';
+import 'package:devlomatix/pages/shop/pages/category_products.dart';
 
 import 'package:devlomatix/utils/colors.dart';
 import 'package:flutter/material.dart';
@@ -66,13 +67,17 @@ class CategoryList extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      print(
-                          'Category item clicked  ${provider.category[index].title}');
-                      provider.setProductCategory(
-                          provider.category[index].title.toString());
-                      provider.getProducts(provider.category[index].title,
-                          provider.category[index].slug);
-                      Navigator.pushNamed(context, AllProducts.routeName);
+                      provider.categoryProductTitle =
+                          provider.category[index].title.toString();
+                      provider
+                          .getCategoryProducts(provider.category[index].slug!)
+                          .then((value) {
+                        if (value == 'success') {
+                        } else {}
+
+                        Navigator.pushNamed(
+                            context, CategoryProducts.routeName);
+                      });
                     },
                     child: Padding(
                       padding: const EdgeInsets.all(8),

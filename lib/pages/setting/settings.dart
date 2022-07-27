@@ -27,6 +27,7 @@ class Setting extends StatelessWidget {
             },
             icon: const Icon(Icons.arrow_back)),
         title: const Text('Settings'),
+        titleSpacing: 0,
       ),
       body: WillPopScope(
         onWillPop: () async {

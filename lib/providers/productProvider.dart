@@ -1,16 +1,14 @@
 import 'dart:convert';
-
 import 'package:devlomatix/models/categoryModel.dart';
 import 'package:devlomatix/models/productModel.dart';
 import 'package:devlomatix/models/sliderModel.dart';
-import 'package:devlomatix/providers/searchProvider.dart';
 import 'package:devlomatix/utils/api.dart';
 import 'package:devlomatix/utils/pref.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:provider/provider.dart';
 
 class ProductProvider extends ChangeNotifier {
+  bool loading = false;
   List<SliderModel> slider = [];
   List<CategoryModel> category = [];
   List<ProductModel> trending = [];
@@ -21,6 +19,9 @@ class ProductProvider extends ChangeNotifier {
   List<ProductModel> mostViewed = [];
   List<ProductModel> searchDefaultItems = [];
   List<ProductModel> searchedItems = [];
+
+  String categoryProductTitle = '';
+  List<ProductModel> categoryProducts = [];
 
   ProductModel product = ProductModel();
   int cartCount = 0;
@@ -70,8 +71,28 @@ class ProductProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> getProducts(title, slug) async {
-    final String url = API.products.toString() + slug;
+  // Future<void> getProducts(title, slug) async {
+  //   final String url = API.products.toString() + slug;
+
+  //   String token = await SharePref.getString('token');
+
+  //   var header = {
+  //     'Content-Type': 'application/json',
+  //     'Accept': 'application/json',
+  //   };
+
+  //   final response = await http.get(Uri.parse(url), headers: header);
+  //   if (response.statusCode == 200) {
+  //     allProducts = (json.decode(response.body) as List)
+  //         .map((i) => ProductModel.fromJson(i))
+  //         .toList();
+  //     notifyListeners();
+  //   }
+  // }
+
+  Future getCategoryProducts(String category) async {
+    //categoryProducts = [];
+    final String url = API.products.toString() + category;
 
     String token = await SharePref.getString('token');
 
@@ -82,10 +103,11 @@ class ProductProvider extends ChangeNotifier {
 
     final response = await http.get(Uri.parse(url), headers: header);
     if (response.statusCode == 200) {
-      allProducts = (json.decode(response.body) as List)
+      categoryProducts = (json.decode(response.body) as List)
           .map((i) => ProductModel.fromJson(i))
           .toList();
       notifyListeners();
+      return 'success';
     }
   }
 

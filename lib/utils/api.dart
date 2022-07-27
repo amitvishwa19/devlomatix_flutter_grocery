@@ -8,10 +8,10 @@ class API {
   static const refreshToken = baseUrl + '/refresh';
   static const user = baseUrl + '/user';
 
-  static const grocerySlider = baseUrl + '/grocery/slider';
-  static const groceryCategory = baseUrl + '/grocery/categories';
-  static const products = baseUrl + '/grocery/products/';
-  static const hotProducts = baseUrl + '/grocery/products/hot';
+  static const grocerySlider = baseUrl + '/slider';
+  static const groceryCategory = baseUrl + '/categories';
+  static const products = baseUrl + '/products/';
+  static const hotProducts = baseUrl + '/products/hot';
   static const cart = baseUrl + '/cart';
   static const addToCart = baseUrl + '/cart/add';
   static const deleteFromCart = baseUrl + '/cart/delete';
@@ -22,5 +22,14 @@ class API {
   static const addToWishlist = baseUrl + '/wishlist/add';
   static const removeFrmWishlist = baseUrl + '/wishlist/remove';
   static const getWishlist = baseUrl + '/wishlist/get';
-  static const productSearch = baseUrl + '/grocery/products/search';
+  static const productSearch = baseUrl + '/products/search';
+
+  static const getAddress = baseUrl + '/checkout/address';
+  static const addAddress = baseUrl + '/checkout/address/add';
+  static const deleteAddress = baseUrl + '/checkout/address/delete';
+
+  static const allOrders = baseUrl + '/checkout/orders';
+  static const newOrder = baseUrl + '/checkout/order/add';
+  static const cancelOrder = baseUrl + '/checkout/order/cancel';
+  static const cloneOrder = baseUrl + '/checkout/order/clone';
 }

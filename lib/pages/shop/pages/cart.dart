@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:devlomatix/models/cartModel.dart';
 import 'package:devlomatix/models/productModel.dart';
+import 'package:devlomatix/pages/shop/pages/address.dart';
 import 'package:devlomatix/pages/shop/pages/address_selection.dart';
 import 'package:devlomatix/pages/shop/pages/checkout.dart';
 import 'package:devlomatix/pages/shop/widgets/counter.dart';
@@ -105,7 +106,7 @@ class Cart extends StatelessWidget {
                     Container(
                       //color: Colors.grey,
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 10),
+                          horizontal: 10, vertical: 10),
                       height: 120,
                       //color: Colors.green.withOpacity(0.5),
                       child: Column(
@@ -129,11 +130,12 @@ class Cart extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, Checkout.routeName);
+                        HapticFeedback.vibrate();
+                        Navigator.pushNamed(context, Address.routeName);
                       },
                       child: Container(
                         margin: const EdgeInsets.only(
-                            bottom: 10, right: 20, left: 20),
+                            bottom: 10, right: 10, left: 10),
                         padding: const EdgeInsets.all(15),
                         decoration: BoxDecoration(
                           color: primaryColor,

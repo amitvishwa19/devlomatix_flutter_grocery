@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:devlomatix/models/userModel.dart';
 import 'package:devlomatix/utils/api.dart';
+import 'package:devlomatix/utils/pref.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
@@ -55,5 +56,23 @@ class UserProvider extends ChangeNotifier {
     } else {
       print('No image selected.');
     }
+  }
+
+  Future addAddress(data) async {
+    final String url = API.addAddress.toString();
+
+    String token = await SharePref.getString('token');
+
+    var header = {
+      'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
+
+    final response = await http.post(Uri.parse(url),
+        body: jsonEncode(data), headers: header);
+    var jsonRes = jsonDecode(response.body);
+
+    return jsonRes['message'];
   }
 }

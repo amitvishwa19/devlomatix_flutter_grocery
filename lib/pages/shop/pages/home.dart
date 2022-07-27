@@ -13,6 +13,7 @@ import 'package:devlomatix/providers/wishlistProvider.dart';
 import 'package:devlomatix/utils/colors.dart';
 import 'package:devlomatix/utils/strings.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 class GroceryHome extends StatefulWidget {
@@ -150,6 +151,7 @@ class _GroceryHomeState extends State<GroceryHome> {
                           ),
                           trailing: GestureDetector(
                               onTap: () {
+                                HapticFeedback.vibrate();
                                 Navigator.pushNamed(context, Cart.routeName);
                               },
                               child: SizedBox(

@@ -1,5 +1,10 @@
+import 'dart:convert';
+
+import 'package:devlomatix/providers/checkoutProvider.dart';
+import 'package:devlomatix/providers/userProvider.dart';
 import 'package:devlomatix/utils/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class AddAddress extends StatefulWidget {
   static String routeName = "/addAddress";
@@ -11,22 +16,23 @@ class AddAddress extends StatefulWidget {
 
 class _AddAddressState extends State<AddAddress> {
   final _formKey = GlobalKey<FormState>();
-  final house = TextEditingController();
-  final locality = TextEditingController();
-  final landmark = TextEditingController();
+  final house = TextEditingController(text: '202');
+  final locality = TextEditingController(text: 'Rajeshwer Planet');
+  final landmark = TextEditingController(text: 'Near super market');
   final optional = TextEditingController();
-  final city = TextEditingController();
-  final state = TextEditingController();
-  final pincode = TextEditingController();
+  final city = TextEditingController(text: 'Vadodara');
+  final state = TextEditingController(text: 'Gujarat');
+  final pincode = TextEditingController(text: '390022');
+  final mobile = TextEditingController(text: '9712340450');
 
-  addAdress() {
-    if (_formKey.currentState!.validate()) {
-      print('Address will be added');
-    }
-  }
+  bool loading = false;
+
+  String addType = 'home';
 
   @override
   Widget build(BuildContext context) {
+    //UserProvider userProvider = Provider.of<UserProvider>(context);
+    CheckoutProvider checkoutProvider = Provider.of(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('Add New Address'),
@@ -44,6 +50,7 @@ class _AddAddressState extends State<AddAddress> {
                   error: 'Enter house number',
                   controler: house,
                   validate: true,
+                  inputType: TextInputType.name,
                 ),
                 InputField(
                   label: 'Locality',
@@ -51,6 +58,7 @@ class _AddAddressState extends State<AddAddress> {
                   error: 'Locality is required',
                   controler: locality,
                   validate: false,
+                  inputType: TextInputType.name,
                 ),
                 InputField(
                   label: 'Landmark',
@@ -58,6 +66,7 @@ class _AddAddressState extends State<AddAddress> {
                   error: 'Landmark is required',
                   controler: landmark,
                   validate: true,
+                  inputType: TextInputType.name,
                 ),
                 InputField(
                   label: 'Optional details',
@@ -65,6 +74,7 @@ class _AddAddressState extends State<AddAddress> {
                   error: '',
                   controler: optional,
                   validate: false,
+                  inputType: TextInputType.name,
                 ),
                 InputField(
                   label: 'City',
@@ -72,6 +82,7 @@ class _AddAddressState extends State<AddAddress> {
                   error: 'City is required',
                   controler: city,
                   validate: true,
+                  inputType: TextInputType.name,
                 ),
                 InputField(
                   label: 'State',
@@ -79,6 +90,7 @@ class _AddAddressState extends State<AddAddress> {
                   error: 'State is required',
                   controler: state,
                   validate: true,
+                  inputType: TextInputType.name,
                 ),
                 InputField(
                   label: 'Pincode',
@@ -86,31 +98,125 @@ class _AddAddressState extends State<AddAddress> {
                   error: 'Pincode is required',
                   controler: pincode,
                   validate: true,
+                  inputType: TextInputType.number,
                 ),
+                InputField(
+                  label: 'Mobile',
+                  hint: 'Enter contact number',
+                  error: 'Mobile number is required',
+                  controler: mobile,
+                  validate: true,
+                  inputType: TextInputType.number,
+                ),
+                const ListTile(
+                  title: Text('Address Type'),
+                ),
+                RadioListTile(
+                  title: const Text('Home'),
+                  value: 'home',
+                  groupValue: addType,
+                  onChanged: (e) {
+                    setState(() {
+                      addType = 'home';
+                    });
+                  },
+                  secondary: const Icon(
+                    Icons.home,
+                    color: primaryColor,
+                  ),
+                ),
+                RadioListTile(
+                  title: const Text('Office'),
+                  value: 'work',
+                  groupValue: addType,
+                  onChanged: (e) {
+                    setState(() {
+                      addType = 'work';
+                    });
+                  },
+                  secondary: const Icon(
+                    Icons.work,
+                    color: primaryColor,
+                  ),
+                ),
+                RadioListTile(
+                  title: const Text('Other'),
+                  value: 'other',
+                  groupValue: addType,
+                  onChanged: (value) {
+                    setState(() {
+                      addType = 'other';
+                    });
+                  },
+                  secondary: const Icon(
+                    Icons.devices_other,
+                    color: primaryColor,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(15),
+                  height: 80,
+                  child: SizedBox(
+                    height: 54,
+                    width: MediaQuery.of(context).size.width * .95,
+                    child: MaterialButton(
+                      onPressed: () {
+                        var data = {
+                          'house': house.text,
+                          'locality': locality.text,
+                          'landmark': landmark.text,
+                          'optional': optional.text,
+                          'city': city.text,
+                          'state': state.text,
+                          'pincode': pincode.text,
+                          'mobile': mobile.text,
+                          'type': addType
+                        };
+
+                        if (_formKey.currentState!.validate()) {
+                          if (!loading) {
+                            setState(() {
+                              loading = true;
+                            });
+
+                            checkoutProvider.addAddress(data).then((value) {
+                              print(value);
+
+                              if (value == 'success') {
+                                setState(() {
+                                  loading = false;
+                                });
+                                Navigator.pop(context);
+                              }
+                            });
+                          }
+                        }
+                      },
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5)),
+                      color:
+                          loading ? primaryColor.withOpacity(.5) : primaryColor,
+                      child: !loading
+                          ? const Text(
+                              'Add Address',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold),
+                            )
+                          : const SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                      Colors.white)),
+                            ),
+                    ),
+                  ),
+                )
               ],
             )),
-      ),
-      bottomNavigationBar: Container(
-        height: 60,
-        child: InkWell(
-          onTap: () {
-            addAdress();
-          },
-          child: Container(
-            margin: const EdgeInsets.only(bottom: 10, right: 20, left: 20),
-            padding: const EdgeInsets.all(15),
-            decoration: BoxDecoration(
-              color: primaryColor,
-              borderRadius: BorderRadius.circular(5),
-            ),
-            child: const Center(
-              child: Text(
-                'Add Address',
-                style: TextStyle(color: Colors.white, fontSize: 18),
-              ),
-            ),
-          ),
-        ),
       ),
     );
   }
@@ -122,6 +228,7 @@ class InputField extends StatelessWidget {
   final String error;
   final bool validate;
   final TextEditingController controler;
+  final TextInputType inputType;
 
   InputField({
     Key? key,
@@ -130,14 +237,15 @@ class InputField extends StatelessWidget {
     required this.error,
     required this.controler,
     required this.validate,
+    required this.inputType,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
       child: TextFormField(
-          keyboardType: TextInputType.emailAddress,
+          keyboardType: inputType,
           controller: controler,
           validator: (value) {
             if (validate) {

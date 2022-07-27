@@ -2,6 +2,7 @@ import 'package:devlomatix/pages/splash/splash.dart';
 import 'package:devlomatix/providers/appProvider.dart';
 import 'package:devlomatix/providers/authProvider.dart';
 import 'package:devlomatix/providers/cartProvider.dart';
+import 'package:devlomatix/providers/checkoutProvider.dart';
 import 'package:devlomatix/providers/locationProvider.dart';
 import 'package:devlomatix/providers/productProvider.dart';
 import 'package:devlomatix/providers/userProvider.dart';
@@ -36,7 +37,8 @@ void main() async {
       ChangeNotifierProvider(create: (_) => ProductProvider()),
       ChangeNotifierProvider(create: (_) => LocationProvider()),
       ChangeNotifierProvider(create: (_) => CartProvider()),
-      ChangeNotifierProvider(create: (_) => WishlistProvider())
+      ChangeNotifierProvider(create: (_) => WishlistProvider()),
+      ChangeNotifierProvider(create: (_) => CheckoutProvider())
     ],
     child: MyApp(),
   ));

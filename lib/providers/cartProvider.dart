@@ -15,6 +15,7 @@ class CartProvider extends ChangeNotifier {
   int totalDiscount = 0;
   int totalTax = 0;
   int netPrice = 0;
+  int deliveryCharge = 0;
 
   int cartCount = 0;
 
@@ -22,9 +23,7 @@ class CartProvider extends ChangeNotifier {
 
   getCartData() async {
     final String _url = API.cart.toString();
-
     String _token = await SharePref.getString('token');
-
     var header = {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
@@ -33,11 +32,13 @@ class CartProvider extends ChangeNotifier {
 
     final response = await http.get(Uri.parse(_url), headers: header);
 
+    print('getCartData function is called');
     if (response.statusCode == 200) {
       cartItems = (json.decode(response.body) as List)
           .map((i) => CartModel.fromJson(i))
           .toList();
       notifyListeners();
+      await cartSummary();
     }
   }
 
